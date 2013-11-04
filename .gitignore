@@ -5,6 +5,8 @@
 # files for the dex VM
 *.dex
 
+# gradle files
+.gradle
 # Java class files
 *.class
 
