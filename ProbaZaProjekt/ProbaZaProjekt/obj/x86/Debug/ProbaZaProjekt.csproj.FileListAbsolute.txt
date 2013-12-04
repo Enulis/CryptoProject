@@ -1,0 +1,9 @@
+c:\users\home\documents\visual studio 2010\Projects\ProbaZaProjekt\ProbaZaProjekt\obj\x86\Debug\ResolveAssemblyReference.cache
+c:\users\home\documents\visual studio 2010\Projects\ProbaZaProjekt\ProbaZaProjekt\obj\x86\Debug\ProbaZaProjekt.Form1.resources
+c:\users\home\documents\visual studio 2010\Projects\ProbaZaProjekt\ProbaZaProjekt\obj\x86\Debug\ProbaZaProjekt.Properties.Resources.resources
+c:\users\home\documents\visual studio 2010\Projects\ProbaZaProjekt\ProbaZaProjekt\obj\x86\Debug\GenerateResource.read.1.tlog
+c:\users\home\documents\visual studio 2010\Projects\ProbaZaProjekt\ProbaZaProjekt\obj\x86\Debug\GenerateResource.write.1.tlog
+c:\users\home\documents\visual studio 2010\Projects\ProbaZaProjekt\ProbaZaProjekt\bin\Debug\ProbaZaProjekt.exe
+c:\users\home\documents\visual studio 2010\Projects\ProbaZaProjekt\ProbaZaProjekt\bin\Debug\ProbaZaProjekt.pdb
+c:\users\home\documents\visual studio 2010\Projects\ProbaZaProjekt\ProbaZaProjekt\obj\x86\Debug\ProbaZaProjekt.exe
+c:\users\home\documents\visual studio 2010\Projects\ProbaZaProjekt\ProbaZaProjekt\obj\x86\Debug\ProbaZaProjekt.pdb
