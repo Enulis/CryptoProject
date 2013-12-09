@@ -14,6 +14,35 @@
         android:layout_width="fill_parent"
         android:orientation="vertical">
 
+        <Spinner
+            android:id="@+id/spinner_algorithms"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:entries="@array/algorithms_array"
+            android:prompt="@string/algorithms_hint">
+            </Spinner>
+
+        <Spinner
+            android:id="@+id/spinner_sizes"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:entries="@array/sizes_array"
+            android:prompt="@string/sizes_hint"></Spinner>
+
+        <Spinner
+            android:id="@+id/spinner_modes"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:entries="@array/modes_array"
+            android:prompt="@string/modes_hint"></Spinner>
+
+        <Spinner
+            android:id="@+id/spinner_paddings"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:entries="@array/paddings_array"
+            android:prompt="@string/paddings_hint"></Spinner>
+
         <EditText
             android:id="@+id/text_input"
             android:layout_height="wrap_content"
@@ -25,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:textSize="16dp"
+            android:textSize="14dp"
             android:layout_below="@id/text_view"/>
 
     </LinearLayout>

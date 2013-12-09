@@ -9,26 +9,50 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.security.Provider;
 import java.security.SecureRandom;
+import java.security.Security;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 public class MainActivity extends ActionBarActivity {
 
+    private String LOG_TAG = "MAIN";
+
     private String seed = "ASDFWERWFASD";
+
     private TextView textView;
+    private Spinner spinnerAlgorithms;
+    private Spinner spinnerSizes;
+    private Spinner spinnerModes;
+    private Spinner spinnerPaddings;
+
+    private int keySize;
+    private String algorithm;
+    private String mode;
+    private String padding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        for (Provider provider: Security.getProviders()) {
+            System.out.println(provider.getName());
+            for (String key: provider.stringPropertyNames())
+                Log.e(LOG_TAG, key);
+        }
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -38,28 +62,56 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public byte[] encrypt(String message){
-        try {
-            byte[] rawKey = getRawKey(seed.getBytes());
+        if( algorithm.equals("DES") || algorithm.equals("AES") || algorithm.equals("Blowfish"))
+            try {
+                byte[] rawKey = getRawKey(seed.getBytes());
 
-            SecretKeySpec secretKeySpec = new SecretKeySpec(rawKey, "AES");
+                SecretKeySpec secretKeySpec = new SecretKeySpec(rawKey, algorithm);
 
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
-            byte[] encrypted = cipher.doFinal(message.getBytes());
+                Cipher cipher;
+                if( mode.equals("default") )
+                    cipher = Cipher.getInstance(algorithm);
+                else
+                    cipher = Cipher.getInstance(algorithm + "/" + mode + "/" + padding);
+                cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+                byte[] encrypted = cipher.doFinal(message.getBytes());
 
-            Log.e("CIPHER", encrypted.toString());
-            return encrypted;
-        }catch (Exception e){
-            e.printStackTrace();
-            return new byte[0];
-        }
+                Log.e("CIPHER", encrypted.toString());
+                return encrypted;
+            }catch (Exception e){
+                e.printStackTrace();
+                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                return new byte[0];
+
+            }
+        else
+            try{
+                byte[] rawKey = getRawKey(seed.getBytes());
+                // get an hmac_sha1 key from the raw key bytes
+                SecretKeySpec secretKeySpec = new SecretKeySpec(rawKey, algorithm);
+
+                // get an hmac_sha1 Mac instance and initialize with the signing key
+                Mac mac = Mac.getInstance(algorithm);
+                mac.init(secretKeySpec);
+
+                // compute the hmac on input data bytes
+                byte[] encrypted = mac.doFinal(message.getBytes());
+                Log.e("CIPHER2", encrypted.toString());
+
+                return encrypted;
+            }catch (Exception e){
+                e.printStackTrace();
+                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                return new byte[0];
+            }
+
     }
 
-    private static byte[] getRawKey(byte[] seed) throws Exception {
-        KeyGenerator kgen = KeyGenerator.getInstance("AES");
+    private byte[] getRawKey(byte[] seed) throws Exception {
+        KeyGenerator kgen = KeyGenerator.getInstance(algorithm);
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         sr.setSeed(seed);
-        kgen.init(128, sr); // 192 and 256 bits may not be available
+        kgen.init(keySize, sr); // 192 and 256 bits may not be available
         SecretKey skey = kgen.generateKey();
         byte[] raw = skey.getEncoded();
         return raw;
@@ -101,8 +153,63 @@ public class MainActivity extends ActionBarActivity {
 
             Button cipherButton = (Button) rootView.findViewById(R.id.cipher_button);
             final EditText input = (EditText) rootView.findViewById(R.id.text_input);
-            textView = (TextView) rootView.findViewById(R.id.text_view);
+            textView =          (TextView) rootView.findViewById(R.id.text_view);
+            spinnerAlgorithms = (Spinner) rootView.findViewById(R.id.spinner_algorithms);
+            spinnerSizes =      (Spinner) rootView.findViewById(R.id.spinner_sizes);
+            spinnerModes =      (Spinner) rootView.findViewById(R.id.spinner_modes);
+            spinnerPaddings =   (Spinner) rootView.findViewById(R.id.spinner_paddings);
 
+            spinnerAlgorithms.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    algorithm = parent.getItemAtPosition(position).toString();
+                    Log.e(LOG_TAG, algorithm);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            spinnerSizes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    keySize = Integer.parseInt(parent.getItemAtPosition(position).toString());
+                    Log.e(LOG_TAG, String.valueOf(keySize));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            spinnerModes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    mode = parent.getItemAtPosition(position).toString();
+                    Log.e(LOG_TAG, mode);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            spinnerPaddings.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    padding = parent.getItemAtPosition(position).toString();
+                    Log.e(LOG_TAG, padding);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
             cipherButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

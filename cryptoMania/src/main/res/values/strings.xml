@@ -5,4 +5,39 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <string name="algorithms_hint">Izaberi algoritam kriptiranja</string>
+    <string-array name="algorithms_array">
+        <item>DES</item>
+        <item>AES</item>
+        <item>Blowfish</item>
+        <item>HmacMD5</item>
+        <item>HmacSHA1</item>
+    </string-array>
+
+    <string name="sizes_hint">Izaberi duljinu kljuca</string>
+    <string-array name="sizes_array">
+        <item>128</item>
+        <item>192</item>
+        <item>256</item>
+        <item>64</item>
+        <item>32</item>
+    </string-array>
+
+    <string name="modes_hint">Izaberi nacin kriptiranja</string>
+    <string-array name="modes_array">
+        <item>default</item>
+        <item>ECB</item>
+        <item>CBC</item>
+        <item>CFB</item>
+        <item>OFB</item>
+    </string-array>
+
+    <string name="paddings_hint">Izaberi padding</string>
+    <string-array name="paddings_array">
+        <item>NoPadding</item>
+        <item>PKCS5Padding</item>
+    </string-array>
+
+
+
 </resources>
