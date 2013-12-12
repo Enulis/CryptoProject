@@ -1,5 +1,8 @@
 package com.cryptoMania;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -10,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -19,6 +23,7 @@ import android.widget.Toast;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.util.ArrayList;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -38,20 +43,35 @@ public class MainActivity extends ActionBarActivity {
     private Spinner spinnerModes;
     private Spinner spinnerPaddings;
 
+    private ArrayList<String> keySizes = new ArrayList<String>(){{
+        add("32");
+        add("64");
+        add("128");
+        add("192");
+        add("256");
+    }};
+
     private int keySize;
     private String algorithm;
     private String mode;
     private String padding;
 
+    private Context self;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
-        for (Provider provider: Security.getProviders()) {
-            System.out.println(provider.getName());
-            for (String key: provider.stringPropertyNames())
-                Log.e(LOG_TAG, key);
+        self = this;
+
+        Provider[] providers = Security.getProviders();
+        for (Provider provider : providers) {
+            Log.i(LOG_TAG, "provider: " + provider.getName());
+            for (Provider.Service service : provider.getServices()) {
+                Log.i(LOG_TAG,"algorithm: "+service.getAlgorithm());
+            }
         }
 
         if (savedInstanceState == null) {
@@ -111,7 +131,7 @@ public class MainActivity extends ActionBarActivity {
         KeyGenerator kgen = KeyGenerator.getInstance(algorithm);
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         sr.setSeed(seed);
-        kgen.init(keySize, sr); // 192 and 256 bits may not be available
+        kgen.init(keySize, sr);
         SecretKey skey = kgen.generateKey();
         byte[] raw = skey.getEncoded();
         return raw;
@@ -132,10 +152,27 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_about:
+                showAbout();
+                Log.e(LOG_TAG, "pritisnuo settings");
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showAbout(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        builder.setTitle("About");
+        builder.setMessage(R.string.about_message);
+        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.create().show();
     }
 
     /**
@@ -158,6 +195,10 @@ public class MainActivity extends ActionBarActivity {
             spinnerSizes =      (Spinner) rootView.findViewById(R.id.spinner_sizes);
             spinnerModes =      (Spinner) rootView.findViewById(R.id.spinner_modes);
             spinnerPaddings =   (Spinner) rootView.findViewById(R.id.spinner_paddings);
+
+            ArrayAdapter<String> keySizesAdapter = new ArrayAdapter<String>(self, android.R.layout.simple_spinner_item, keySizes);
+            keySizesAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+            spinnerSizes.setAdapter(keySizesAdapter);
 
             spinnerAlgorithms.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override

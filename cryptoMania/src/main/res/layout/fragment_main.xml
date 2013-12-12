@@ -14,39 +14,84 @@
         android:layout_width="fill_parent"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:text="@string/algorithms_hint"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
         <Spinner
             android:id="@+id/spinner_algorithms"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:entries="@array/algorithms_array"
-            android:prompt="@string/algorithms_hint">
-            </Spinner>
+            android:prompt="@string/algorithms_hint"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:text="@string/sizes_hint"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
         <Spinner
             android:id="@+id/spinner_sizes"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:entries="@array/sizes_array"
-            android:prompt="@string/sizes_hint"></Spinner>
+            android:prompt="@string/sizes_hint"
+            android:layout_marginBottom="20dp" />
+
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:text="@string/modes_hint"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
         <Spinner
             android:id="@+id/spinner_modes"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:entries="@array/modes_array"
-            android:prompt="@string/modes_hint"></Spinner>
+            android:prompt="@string/modes_hint"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:text="@string/paddings_hint"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
         <Spinner
             android:id="@+id/spinner_paddings"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:entries="@array/paddings_array"
-            android:prompt="@string/paddings_hint"></Spinner>
+            android:prompt="@string/paddings_hint"
+            android:layout_marginBottom="10dp" />
 
         <EditText
             android:id="@+id/text_input"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
+            android:singleLine="true"
             android:hint="unesi tekst za kriptiranje"/>
 
         <TextView
@@ -55,7 +100,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:textSize="14dp"
-            android:layout_below="@id/text_view"/>
+            android:layout_below="@id/text_view"
+            android:background="#E3E9EF"/>
 
     </LinearLayout>
 
