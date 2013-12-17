@@ -1,15 +1,19 @@
 body {
 	padding: 20px;}
 
-h1, h2, h3, a {
+h1, h2, h3, h4, a {
+	font-family: Arial, Verdana, sans-serif;
 	font-weight: normal;
 	color: #143572;
 	margin: 0px;}
 
 h1 {
-	font-family: Arial, Verdana, sans-serif;
 	font-size: 250%;
 	padding-bottom: 10px;}
+
+.home{
+
+}
 
 .description{
 	font-size: 100%;
@@ -18,22 +22,33 @@ h1 {
 }
 
 h2 {
-	font-family: Arial, Verdana, sans-serif;
 	font-size: 175%;
 	margin-top: 10px;
 	margin-bottom: 10px;}	
 
 h3 {
 	font-weight: bold;
-	font-size: 130%;
+	font-size: 150%;
 	margin: 0px}
+
+h4 {
+	font-size: 115%;
+	font-style: italic;
+	font-weight: bold;
+	text-decoration: none;
+}
 
 p, dl {
 	font-family: Arial, Verdana, sans-serif;
 	line-height: 1.4em;
 	color: #665544;}
 
+.highlight{
+	color: #143572;
+}
+
 p{
+	margin-right: 40px;
 	text-indent: 40px;
 }
 
@@ -41,14 +56,57 @@ dd {
 	margin-top: 4px;
 }
 
-li {
-	color: #143572;
+li:not(.team-member) {
+	text-indent: 45px;
+	margin-top: 2px;
+}
+
+.team-member{
 	font-size: 120%;
+	color: #143572;
 	margin-top: 15px;
 }
-a {
+
+a:not(.home){
 	color: #346BAA;
+}
+
+a {
 	text-decoration: none;}
 
-a:hover {
+a:hover:not(.home) {
 	text-decoration: underline;}
+
+pre { 
+	font-family: monospace; 
+	color: #d0d0d0; 
+	background-color: #1c1c1c; 
+	padding-top: 5px;
+	padding-bottom: 5px;
+	width: 600px;
+}
+
+* { font-size: 1em; }
+
+.Constant { color: #ff40ff; }
+.Comment { color: #00ffff; }
+.PreProc { color: #5fd7ff; }
+.LineNr { 
+	color: #626262; 
+	background-color: #080808; 
+	padding-bottom: 1px; }
+.Statement { color: #ffff00; }
+.Type { color: #87ffaf; }
+.Number { color: #d7875f; }
+.String { color: #87d75f; }
+
+.container{
+	display: inline;
+}
+
+.container img{
+	max-height: 500px;
+	max-width: 500px;
+	margin-left: 10px;
+	margin-right: 10px;
+}

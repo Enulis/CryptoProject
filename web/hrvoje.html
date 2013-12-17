@@ -1,0 +1,147 @@
+<html>
+	<head>
+
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Projekt</title>
+
+	</head>
+	<body>
+		<h1><a class="home" href="index.html"> Projekt </a></h1>
+		<h1 class="description"> 
+			FER, godina: 2013./2014. <br>
+			Mentor: Marin Golub
+		</h1>
+		<h2>Kriptografija na android operativnom sustavu</h2>
+		<p> Na ovom projektu razvio sam aplikaciju u Javi koja daje kratki pregled rada s kriptografskim algoritimima na operacijskom sustavu Android. Tom aplikacijom korisnik dolazi u mogućnost kroz jednostavno i intuitivno sučelje bolje si predočiti način rada nekoliko različitih algoritama kriptiranja uz podešavanje parametara istih kao što su način kriptiranja i padding. Osnovna funkcionalnost aplikacije je takva da sve što korisnik treba je unjeti tekst za kriptiranje, odabrati algoritam, način kriptiranja i padding, te kriptirati taj tekst nakon čega će dobiti ispisanu kriptiranu poruku na ekranu. Aplikacija je namijenjena prvenstveno u edukacijske svrhe studenata Fakulteta Elektrotehnike i Računarstva.</p>
+		<br>
+
+		<h3>Tehničke značajke</h3>
+		<p>Android OS nam za ovakve stvari nudi dva bitna java libraryja, a to su java.security i javax.crypto. </p>
+		<pre>
+<span class="LineNr">  1 </span><span class="PreProc">import</span> java.security.*;
+<span class="LineNr">  2 </span><span class="PreProc">import</span> javax.crypto.*;</pre>
+
+		<p>Prva korisna stvar koju možemo vidjeti prije nego što počnemo je koje algoritme uopće imamo podržane i to ćemo napraviti ovako:</p>
+		<pre>
+<span class="LineNr"> 26 </span>Provider[] providers = Security.getProviders();
+<span class="LineNr"> 27 </span><span class="Statement">for</span> (Provider provider : providers) {
+<span class="LineNr"> 28 </span>	Log.i(LOG_TAG, <span class="String">&quot;provider: &quot;</span> + provider.getName());
+<span class="LineNr"> 29 </span>	<span class="Statement">for</span> (Provider.Service service : provider.getServices()) {
+<span class="LineNr"> 30 </span>		Log.i(LOG_TAG,<span class="String">&quot;algorithm: &quot;</span>+service.getAlgorithm());
+<span class="LineNr"> 31 </span>	}
+<span class="LineNr"> 32 </span>}</pre>
+
+		<p>Na izlazu ćemo dobiti popis svih providera i algoritama koje podržavaju i on bi trebao izgledati ovako nekako (<a href="static/algoritmi">link</a>).</p>
+
+		<br>
+		<h4> MAC (Message Authentication Code)</h4>
+		<p>U kriptografiji MAC je dio informacije koji se veže uz poruku koja se želi sigurno prenjeti. MAC sa sigurnošću može potvrditi izvor i cjelovitost poruke koja se prenjela. Najčešće se izvodi kao hash funkcija koja na ulazu očekuje privatni ključ korisnika, te generira MAC. </p>
+
+		<p>U Javi za generiranje ključeva imamo <span class="highlight">KeyGenerator</span> razred, a za baratanje MAC-om nam na raspolaganju stoji <span class="highlight">Mac</span> razred te njihove metode koje su prikazane u nastavku.</p>
+
+		<p>Prvo generiramo novi privatni ključ:</p>
+		<pre>
+<span class="LineNr"> 1 </span><span class="Type">private</span> String algorithm = <span class="String">&quot;MD5&quot;</span>;
+<span class="LineNr"> 2 </span>
+<span class="LineNr"> 3 </span><span class="Comment">// generiranje privatnog ključa</span>
+<span class="LineNr"> 4 </span><span class="Type">private</span> <span class="Type">byte</span>[] getRawKey(<span class="Type">byte</span>[] seed) <span class="Type">throws</span> Exception {
+<span class="LineNr"> 5 </span>    KeyGenerator keyGenerator = KeyGenerator.getInstance(algorithm);
+<span class="LineNr"> 6 </span>
+<span class="LineNr"> 7 </span>    SecureRandom sr = SecureRandom.getInstance(<span class="String">&quot;SHA1PRNG&quot;</span>);
+<span class="LineNr"> 8 </span>    sr.setSeed(seed);
+<span class="LineNr"> 9 </span>
+<span class="LineNr">10 </span>    keyGenerator.init(keySize, sr);
+<span class="LineNr">11 </span>    SecretKey secretKey = keyGenerator.generateKey();
+<span class="LineNr">12 </span>
+<span class="LineNr">13 </span>    <span class="Type">byte</span>[] rawKey = secretKey.getEncoded();
+<span class="LineNr">14 </span>    <span class="Statement">return</span> rawKey;
+<span class="LineNr">15 </span>}</pre>
+
+		<p>Zatim možemo izvući MAC iz poruke pomoću tog ključa:</p>
+		<pre>
+<span class="LineNr">18 </span><span class="Type">byte</span>[] rawKey = getRawKey(seed.getBytes());
+<span class="LineNr">19 </span>
+<span class="LineNr">20 </span><span class="Comment">// dobivanje specifičnog ključa od bajtova privatnog ključa</span>
+<span class="LineNr">21 </span>SecretKeySpec secretKeySpec = <span class="Statement">new</span> SecretKeySpec(rawKey, algorithm);
+<span class="LineNr">22 </span>
+<span class="LineNr">23 </span>Mac mac = Mac.getInstance(algorithm);
+<span class="LineNr">24 </span>mac.init(secretKeySpec);
+<span class="LineNr">25 </span>
+<span class="LineNr">26 </span><span class="Comment">// izračunaj mac na poruci</span>
+<span class="LineNr">27 </span><span class="Type">byte</span>[] encrypted = mac.doFinal(message.getBytes());</pre>
+		<br><br>
+		<h4> Kriptiranje podataka </h4>
+		<p>Postoje dvije vrste kriptiranja podataka a to su <span class="highlight">simetrično</span> i <span class="highlight">asimetrično</span>. Za njihovu izvedbu će nam pomoći razredi <span class="highlight">Cipher</span> koji vrši samo kriptiranje, te <span class="highlight">KeyPairGenerator</span> za generiranje para ključeva (privatnog i javnog). Možemo i specificirati način rada algoritma enkripcije koji se koriste ovisno o potrebama jer svaki ima svoje mane i prednosti a standardni načini su:</p>
+		<dl>
+			<li><span class="highlight">ECB</span> (Electronic Code Book)</li>
+			<li><span class="highlight">CBC</span> (Cipher Block Chaining)</li>
+			<li><span class="highlight">CFB</span> (Cipher Feedback Mode)</li>
+			<li><span class="highlight">OFB</span> (Output Feedback Mode)</li>
+		</dl>
+
+
+		<p>Isto tako enkripcija se može provesti bit po bit ili pak na djelove bitova koje nazivamo <span class="highlight">blokovi</span> (uobičajeno 64 bita duljina), te ukoliko duljina poruke nije djeljiva duljinom pojedinog bloka enkripcije, zadnji blok se proširuje <span class="highlight">paddingom</span> da se popuni veličina bloka. Primjeri različitih paddinga su:</p>
+		<dl>
+			<li class="highlight">No padding</li>
+			<li class="highlight">PCKS5</li>
+			<li class="highlight">OAEP</li>
+			<li class="highlight">SSL3</li>
+		</dl>
+
+		<p>Način enkripcije i padding zadaju se instanci Cipher razreda pri inicijalizaciji u getInstance metodi koja prima string odgovarajućeg formata:</p>
+		<dl>
+			<li><span style="font-style: italic"> "algorithm/mode/padding" </span></li>
+			<p>ili samo</p>
+			<li><span style="font-style: italic"> "algorithm" </span></li>
+		</dl>
+
+		<br>
+		<h4>Simetrično kriptiranje</h4>
+
+		<p>U simetričnom se kriptiranju koristi isti privatni ključ za enkripciju i dekripciju.</p>
+
+		<pre>
+<span class="LineNr">30 </span><span class="Comment">// generiraj ključ</span>
+<span class="LineNr">31 </span><span class="Type">byte</span>[] rawKey = getRawKey(seed.getBytes());
+<span class="LineNr">32 </span>SecretKeySpec secretKeySpec = <span class="Statement">new</span> SecretKeySpec(rawKey, algorithm);
+<span class="LineNr">33 </span>
+<span class="LineNr">34 </span>Cipher cipher = Cipher.getInstance(algorithm + <span class="String">&quot;/&quot;</span> + mode + <span class="String">&quot;/&quot;</span> + padding);
+<span class="LineNr">35 </span>cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+<span class="LineNr">36 </span>
+<span class="LineNr">37 </span><span class="Comment">// kriptiraj</span>
+<span class="LineNr">38 </span><span class="Type">byte</span>[] encrypted = cipher.doFinal(message.getBytes());</pre>
+
+		<h4>Asimetrično kriptiranje</h4>
+		<p>Asimetrično kriptiranje koristi par ključeva od kojih jedan služi za enkripciju, a drugi za dekripciju. Time ključ za enkripciju može biti javan tako da svi mogu generirati kriptiranu poruku koju samo vlasnik privatnog ključa može pročitati.</p>
+		<pre>
+<span class="LineNr">40 </span><span class="Comment">// generiranje ključeva</span>
+<span class="LineNr">41 </span>KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(algorithm);
+<span class="LineNr">42 </span>KeyPair keyPair = keyPairGenerator.generateKeyPair();
+<span class="LineNr">43 </span>PublicKey publicKey = keyPair.getPublic();
+<span class="LineNr">44 </span>PrivateKey privateKey = keyPair.getPrivate();
+<span class="LineNr">45 </span>
+<span class="LineNr">46 </span><span class="Comment">// npr &quot;RSA/ECB/PKCS1Padding&quot;</span>
+<span class="LineNr">47 </span>Cipher cipher = Cipher.getInstance(algorithm + <span class="String">&quot;/&quot;</span> + mode + <span class="String">&quot;/&quot;</span> + padding);
+<span class="LineNr">48 </span>
+<span class="LineNr">49 </span>cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+<span class="LineNr">50 </span><span class="Type">byte</span>[] encrypted = cipher.doFinal(message.getBytes());</pre>
+
+		<br><br>
+		<h3>5.3 Upute za korištenje</h3>
+
+		<br>
+		<h4>Instalacija</h4>
+
+		<p>Ova aplikacija namijenjena je isključivo za android uređaje. APK paket možete skinuti <a href="https://dl.dropboxusercontent.com/u/49650312/share/cryptoMania.apk">ovdje</a></p>
+
+		<br>
+		<h4>Primjer korištenja</h4>
+
+		<p>Korištenje ove aplikacije skroz je jednostavno i intuitivno. Pri ulasku u aplikaciju otvara se glavni ekran na kojem se od korisnika traži unos tekstualne poruke koju želi kriptirati, zatim odabire algoritam, način kriptiranja i padding. Na kraju jednim pritiskom na gumb 'Kriptiraj’ korisniku se ispisuje kriptirana poruka u hex zapisu, te ukoliko kriptiranje nije uspjelo javlja poruku o grešci.</p>
+
+		<div class="container"><img src="static/cryptoMania_home.png">
+		<img src="static/cryptoMania_test.png"></div>
+
+	</body>
+</html>
