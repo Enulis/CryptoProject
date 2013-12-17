@@ -9,11 +9,17 @@
 	<body>
 		<h1><a class="home" href="index.html"> Projekt </a></h1>
 		<h1 class="description"> 
+			Hrvoje Kozak <br>
+			0036460674 <br>
 			FER, godina: 2013./2014. <br>
-			Mentor: Marin Golub
+			Mentor: Marin Golub <br>
+
+			<h1 class="description"> Download:
+			<a href="static/cryptoMania.apk"> apk </a> |
+			<a href="static/source.rar"> source</a></h1>
 		</h1>
 		<h2>Kriptografija na android operativnom sustavu</h2>
-		<p> Na ovom projektu razvio sam aplikaciju u Javi koja daje kratki pregled rada s kriptografskim algoritimima na operacijskom sustavu Android. Tom aplikacijom korisnik dolazi u mogućnost kroz jednostavno i intuitivno sučelje bolje si predočiti način rada nekoliko različitih algoritama kriptiranja uz podešavanje parametara istih kao što su način kriptiranja i padding. Osnovna funkcionalnost aplikacije je takva da sve što korisnik treba je unjeti tekst za kriptiranje, odabrati algoritam, način kriptiranja i padding, te kriptirati taj tekst nakon čega će dobiti ispisanu kriptiranu poruku na ekranu. Aplikacija je namijenjena prvenstveno u edukacijske svrhe studenata Fakulteta Elektrotehnike i Računarstva.</p>
+		<p> Na ovom projektu razvio sam aplikaciju u Javi koja daje kratki pregled rada s kriptografskim algoritimima na operativnom sustavu Android. Tom aplikacijom korisnik dolazi u mogućnost kroz jednostavno i intuitivno sučelje bolje si predočiti način rada nekoliko različitih algoritama kriptiranja uz podešavanje parametara istih kao što su način kriptiranja i padding. Osnovna funkcionalnost aplikacije je takva da sve što korisnik treba je unjeti tekst za kriptiranje, odabrati algoritam, način kriptiranja i padding, te kriptirati taj tekst nakon čega će dobiti ispisanu kriptiranu poruku na ekranu. Aplikacija je namijenjena prvenstveno u edukacijske svrhe studenata Fakulteta Elektrotehnike i Računarstva.</p>
 		<br>
 
 		<h3>Tehničke značajke</h3>
@@ -112,6 +118,7 @@
 <span class="LineNr">37 </span><span class="Comment">// kriptiraj</span>
 <span class="LineNr">38 </span><span class="Type">byte</span>[] encrypted = cipher.doFinal(message.getBytes());</pre>
 
+		<br>
 		<h4>Asimetrično kriptiranje</h4>
 		<p>Asimetrično kriptiranje koristi par ključeva od kojih jedan služi za enkripciju, a drugi za dekripciju. Time ključ za enkripciju može biti javan tako da svi mogu generirati kriptiranu poruku koju samo vlasnik privatnog ključa može pročitati.</p>
 		<pre>
