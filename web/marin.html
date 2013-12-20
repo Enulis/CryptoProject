@@ -1,0 +1,65 @@
+<html>
+	<head>
+
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Projekt</title>
+
+	</head>
+	<body>
+		<h1><a class="home" href="index.html"> Projekt </a></h1>
+		<h1 class="description"> 
+			Marin Pogančić <br>
+			0036464855 <br>
+			FER, godina: 2013./2014. <br>
+			Mentor: Marin Golub <br>
+
+			<h1 class="description"> Download:
+			<a href="static/Marin/KeccakEdu.jar"> jar</a> |
+			<a href="static/Marin/KeccakEduSrc.zip"> source</a></h1>
+		</h1>
+		<h2>Keccak</h2>
+		<p>Razvijeni proizvod je aplikacija u Javi koja prikazuje način rada Keccak SHA-3 algoritma sažimanja  na korisniku maksimalno intuitivan način.  Osnovna funkcionalnost aplikacije je da prihvaća nekakav ulazni tekst te iz tog teksta računa sažetak. Kako Keccak kao algoritam prima određene parametre na kojima se temelji njegov rad (kapacitet,  bitrate i tražena duljina sažetka), omogućeno je postavljanje parametara algoritma kroz aplikaciju. U svrhu lakšeg razumijevanja rada algoritma u aplikaciji su ugrađeni mehanizmi koji prate dali su dati parametri pravilno zadani te aplikacija obaviještava korisnika u slučaju nekakvih nepravilnosti u zadavanju parametara. Također kroz aplikaciju je moguće pratiti stanja u pojedinom dijelu procesa računanja sažetka što olakšava razumijevanje rada algoritma.  Aplikacija je namijenjena prvenstveno u edukacijske svrhe studenata Fakulteta Elektrotehnike i Računarstva.</p><br>
+
+		<h3>Tehničke značajke</h3>
+		<p>U ovom poglavlju je opisan način rada algoritma Keccak te njegove implementacije u aplikaciji.</p>
+		<p>Keccak algoritam je algoritam sažimanja koji je proglašen dobitnikom NIST-ovog natječaja 2013. godine za novi SHA-3 standard. Osnovna karakteristika algoritma je da spada u obitelj spužva funkcija (eng. sponge function) zbog čega ga karakterizira apsorpcija ulaznog niza proizvoljne duljine i generiranje izlaznog niza proizvoljne duljine. Stanje algoritma u datom trenutku se bilježi matricom 5x5 od riječi duljine w koja ovisi o ulaznim parametrima algoritma. Prednost Keccaka je što najmanja razlika u ulaznom nizu potpuno promijeni izlazni niz, što doprinosi svojstvu sigurnosti algoritma</p>
+		<p>Prvo počinjemo sa pseudokodom Keccak funkcije <i>Keccak-f[b](A)</i>. Broj rundi nr ovisi o veličini riječi <i>w</i> u matrici stanja i dobiva se iz slijedeće jednadžbe:</p>
+		<p align = "center"><img src="static/Marin/f1.png"></p>
+		<p>Parametar <i>b</i> je parametar Keccak funkcije koji za koji vrijedi:</p>
+		<p align = "center"><img src="static/Marin/f2.png"></p>
+		<p>Gdje je <i>r</i> parametar bitrate, a <i>c</i> kapacitet algoritma. Predviđena vrijednost parametra <i>b</i> za Keccak funkciju je jedna od slijedećih: 25, 50, 100, 200, 400, 800 i 1600. Duljina riječi (u bitovima) u matrici stanja i parametar <i>b</i> su u slijedećem odnosu:</p>
+		<p align = "center"><img src="static/Marin/f3.png"></p>
+		<p>Iz navedenog možemo zaključiti da je parametar <i>b</i> zapravo ukupna duljina matrice stanja u bitovima koja mora biti djeljiva sa 25, Keccak funkcija nad matricom stanja A provodi permutaciju nr puta kao što je vidljivo u pseudokodu.</p>
+		<p align = "center" ><img align = "center" src="static/Marin/pseudokod1.png"></p>
+		<p>Keccak rundu prikazuje slijedeći pseudokod, kao što je vidljivo ona se provodi u 5 koraka. Bitno je zapamtiti da se operacije rade nad matricom A veličine 5x5 , varijable C, D i B su pomoćne varijable. U zadnjem koraku runde se koristi RC (Round Constant), tj. konstanta pridružena za tu dotičnu rundu. Kako je maksimalni broj rundi 24 u algoritmu su definirane unaprijed konstante za svaku rundu.</p>
+		<p align = "center"><img src="static/Marin/pseudokod2.png"></p>
+		<p>Na kraju slijedi prikaz cijelog algoritma,. Matrica stanja je ovdje označena sa S i njezine vrijednosti se u početku postavljaju na 0 . Osim postavljanja  vrijednosti na 0 potrebno je provesti padding  odnosno nadopuniti ulazni niz do veličine koja zadovoljava parametre algoritma jer algoritam radi sa blokovima od 25 riječi duljine <i>w</i> bitova. Iz tog razloga je potrebno imati niz čija će duljina <i>l</i> zadovoljavati iduću jednadžbu:</p>
+		<p align = "center"><img src="static/Marin/f4.png"></p>
+		<p>U Keccak algoritmu se provodi <i>M || 0x01 || 0x00* || 0x80 </i>padding gdje symbol || označava konkatenaciju a M početnu poruku. Pri paddingu valja obratiti  pažnju na to da se radi dok nije poruka veličine djeljive sa sa <i>r</i>.
+Nakon što se provede padding poruka se absorbira u algoritam tako da se dijeli na blokove veličine r bitova koji se nadopunjavaju sa 0x00 dok ne postignu veličinu od b bitova (veličina jedne matrice stanja), daljnji koraci za svaki Pi blok su jasni iz pseudokoda.
+</p>
+		<p>Squeezing phase, odnosno korak iscjeđivanja se provodi tako da se jednostavno uzme konačno stanje algoritma i spaja u sažetak, ako dobiveni sežetak ne zadovoljava traženu veličinu zacijelo stanje onda se ponovno provodi funkcija Keccak-f za konačnim stanjem te se dobiveno stanje dodatno spaja u sažetak i td. dok se ne dobije tražena duljina sažetka. Bitno je napomenuti da se riječ unutar stanja spaja bajt po bajt i to od najmanje značajnog bajta do najznačajnijeg tj. LSB do MSB.</p>
+		<p align = "center"><img src="static/Marin/pseudokod3.png"></p>
+		<h3>Upute za korištenje</h3>
+		<p> Korištenje aplikacije je poprilično intuitivno, u polje „Input text“ korisnik unosi poruku za koju je potrebno izračunati sažetak. Ispod navedenog polja postoji lista parametara algoritma koje korisnik postavlja u bitovima pri čemu oni moraju zadovoljavati određene kriterije: </p>
+		<ol type="1">
+		<li>Parametar bitrate(r) treba biti djeljiv sa 8.</li>
+		<li>Zbrojeno parametri bitrate i capacity moraju biti jedno od slijedećeg: 25, 50, 100, 200, 400, 800, 1600.</li>
+		<li>Parametar output size mora biti djeljiv sa 4</li>
+		</ol>
+		
+		<p>U slučaju pogreške u zadavanju parametara korisnik će dobiti pripadajuću obavijest od aplikacije ovisno o kojoj je pogrešci riječ. Ako korisnik želi koristiti neki od ugrađenih verzija Keccak-a ( Keccak-224, Keccak-256, Keccak-384, Keccak-512) treba u padajućem izborniku „Built-in implementations“ izabrati jedan od ponuđenih pri čemu će se vrijednosti pojedinih parametara postaviti automatski. </p>
+		<p>Korisnik isto tako ima izbor ako želi prikazati sve korake algoritma po blokovima, u tom slučaju klikne na checkbox „Show states“ pri čemu mu se nakon pokretanja algoritma prikazuje novi prozor sa stanjima algoritma u pojedinim rundama, ako korisnik želi prikaz svih koraka unutar svih runda onda treba kliknuti na checkbox „“Show steps“. </p>
+		<p>Algoritam se pokreće klikom na gumb „Generate hash“, naravno u slučaju krivo zadanih parametara algoritam se neće provesti već će aplikacija obavijestiti korisnika o grešci, rezultat se prikazuje u heksadekadskom zapisu. Slijedi primjeri sučelja:</p>
+	
+		<p align = "center"><div class="container"><img src="static/Marin/sucelje1.png">
+		<img src="static/Marin/sucelje2.png"></div></p>
+	
+	<h3>Literatura</h3>
+	<ol type="1">
+	<li>Guido Bertoni, Joan Daemen, Michael-Peeters, Gilles Van Assche: <a href="http://keccak.noekeon.org/">http://keccak.noekeon.org/</li>
+	</ol>
+	
+	</body>
+</html>

@@ -38,7 +38,7 @@ h4 {
 	text-decoration: none;
 }
 
-p, dl {
+p, dl, li {
 	font-family: Arial, Verdana, sans-serif;
 	line-height: 1.4em;
 	color: #665544;}
