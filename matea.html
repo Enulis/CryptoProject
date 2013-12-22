@@ -86,16 +86,16 @@
 
 		<p>
 		Programski proizvod nastao u okviru kolegija Projekt iz programske potpore je aplikacija u C# programskom jeziku. Ona je implementacija Groestla, funkcije za sažimanje poruka. Programsko rješenje uglavnom slijedi izvorni algoritam. Razlika je u implementaciji proširenja ulazne poruke gdje je korišten padding algoritma AES. Inače je aplikacija razvijena korištenjem osam klasa:
-			<ul>
+			<dl>
 				<li>Program.cs</li>
 				<li>Pokreni.cs</li>
 				<li>Hash.cs</li>
 				<li>Kompresija.cs</li>
 				<li>RadSPermutacijama.cs</li>
 				<li>Izlaz.cs</li>
-				<li>EkskluzivniILI</li>
+				<li>EkskluzivniILI.cs</li>
 				<li>Form1.cs</li>
-			</ul>
+			</dl>
 			
 		</p>
 		
@@ -139,7 +139,7 @@
 		Kao što je na slici vidljivo, u kompresijskoj funkciji koriste se dvije permutacije, P i Q. Ulaz u P permutaciju je rezultat operacije ekskluzivno ili između bloka poruke i ulančanog ulaza.
 		</p>
 		<br><center><img src="static/Matea/Pictures/KompFja.PNG"></center>
-		<br><center>Prikaz programskog ostvarenja</center>
+		<center><p>Prikaz programskog ostvarenja</p></center>
 		
 		<p>
 		Izlaz je pak rezultat iste funkcije, ali ovaj put između izlaza iz permutacije P i permutacije Q.
@@ -148,14 +148,15 @@
 		<br>
 		<h4><a id="perm"><font color="#0431B4">Permutacije</font></a></h4>
 		
-		<p>U okviru permutacija trebaju se izvesti četiri transformacije:
+		<p>U okviru permutacija trebaju se izvesti četiri transformacije:</p>
 		
-			<ul>
+			<dl>
 				<li>AddRoundConstant</li>
 				<li>SubBytes</li>
 				<li>ShiftBytes</li>
 				<li>MixBytes</li>
-			</ul>
+			</dl>
+		<p>
 		Permutacije P i Q se razlikuju samo u konstantama koje se koriste u tranformacijama AddRoundConstant i ShiftBytes te u broju koraka. Groestl-256 ima 10 koraka i pridružene permutacije P512 i Q512, a Groestl-512 14 koraka te permutacije P1024 i Q1024. Najprije se ulaz podijeli po bajtovima tako da se matrica puni redak po redak. Broj redaka je uvijek 8, a mijenja se broj stupaca. Za l = 512, broj stupaca je 8, a za l = 1024, broj stupaca iznosi 16.</p>
 
 		<br>
@@ -184,23 +185,23 @@
 		U okviru ove transformacije primjenjuje se S-Kutija na svaki član matrice. Svaki se element matrice dobije tako da se zamijeni odgovarajućim elementom S-kutije.
 		</p>
 		<br><center><img src="static/Matea/Pictures/aDD.PNG"></center>
-		<br><center>Programski prikaz transformacije SubBytes</center>
+		<center><p>Programski prikaz transformacije SubBytes</p></center>
 		<br>
 		<h5><a id="shift"><font color="#0431B4">ShiftBytes</font></a></h5>
 		
 		<p>
 		ShiftBytes ciklički rotira elemente u pojedinom retku matrice ovisno o verziji algoritma i vrsti permutacije. Polja posmaka su zadana na sljedeći način:
 		</p>
-		<br><img src="static/Matea/Pictures/poljeP512.PNG">  za permutaciju P512
+		<br><img src="static/Matea/Pictures/poljeP512.PNG">  <span class="text">za permutaciju P512</span>
 		<br>
 		
-		<br><img src="static/Matea/Pictures/poljeQ512.PNG">  za permutaciju P1024
+		<br><img src="static/Matea/Pictures/poljeQ512.PNG">  <span class="text">za permutaciju P1024</span>
 		<br>
 		
-		<br><img src="static/Matea/Pictures/poljeP1024.PNG"> za permutaciju Q512
+		<br><img src="static/Matea/Pictures/poljeP1024.PNG">  <span class="text">za permutaciju Q512</span>
 		<br>
 		
-		<br><img src="static/Matea/Pictures/poljeQ1024.PNG"> za permutaciju Q1024
+		<br><img src="static/Matea/Pictures/poljeQ1024.PNG">  <span class="text">za permutaciju Q1024</span>
 		<br>
 		
 		<br>
@@ -222,7 +223,7 @@
 		Množenje x*y u polju GF(2<sup>8</sup>) definirano je kao polinomno množenje modulo polinom <img src="static/Matea/Pictures/polinom.PNG"> Budući da bi ovaj način bio jako spor, koristi se učinkovitija implementacija transformacije MixBytes koja koristi posmak bitova i XOR operaciju:
 		</p>
 		<br><center><img src="static/Matea/Pictures/Trik.PNG"></center>
-		<br><center>Alternativno rješenje funkcije MixBytes</center>
+		<center><p>Alternativno rješenje funkcije MixBytes</p></center>
 		
 		<br>
 		<h4><a id="izlaz"><font color="#0431B4">Izlazna funkcija</font></a></h4>
@@ -247,22 +248,25 @@
 		U aplikaciji je predviđeno mjesto za unos teksta za sažimanje nakon čega slijedi odabir verzije Groestl algoritma. Inače je Groestl algoritam razvijen za različite duljine izlaza, a ova aplikacija je razvijena za inačice Groestl-256 i Groestl-512. Unosom teksta i odabirom verzije algoritma aplikacija se pokreće pritiskom na gumb POKRENI, a njezin se rezultat može vidjeti u heksadekadskom zapisu. 
 		</p>
 		<br><center><img src="static/Matea/Pictures/Aplikacija.PNG"></center>
-		<br><center>Razvijena aplikacija</center>
+		<center><p>Razvijena aplikacija</p></center>
 		
 		<br>
 		<br>
 		<h3><a id="lit"><font color="#0431B4">LITERATURA</font></a></h3>
 		
 		<p>
-		<br>		Studeni 2013. 
-		<br>     <p><a href=" http://csrc.nist.gov/groups/ST/hash/sha3/Round3/documents/Groestl_FinalRnd.zip">SHA-3 GROESTL</a></p>
+		<br>		Studeni 2013. </p>
+	    <p><a href=" http://csrc.nist.gov/groups/ST/hash/sha3/Round3/documents/Groestl_FinalRnd.zip">SHA-3 GROESTL</a></p>
 
-		<br>		Prosinac 2013.
-		<br>     <p><a href=" http://www.groestl.info/specification.html">Specifikacija GROESTL-a</a></p>
+	    <p>
+		<br>		Prosinac 2013.</p>
+		<p><a href=" http://www.groestl.info/specification.html">Specifikacija GROESTL-a</a></p>
 		
-		<br>		Studeni 2013.
-		<br>     <p><a href=" http://www.groestl.info/implementations.html">Implementacija GROESTL-a</a></p>
+		<p>
+		<br>		Studeni 2013. </p>
+		<p><a href=" http://www.groestl.info/implementations.html">Implementacija GROESTL-a</a></p>
 		
+		<p>
 		<br> Sve neoznačene slike su preuzete iz gore navedene literature.
 		</p>
 		

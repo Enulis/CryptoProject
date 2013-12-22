@@ -42,10 +42,11 @@ h4 {
 	text-decoration: none;
 }
 
-p, dl, ol {
+p, dl, ol, .text {
 	font-family: Arial, Verdana, sans-serif;
 	line-height: 1.4em;
 	color: #665544;}
+
 
 .highlight{
 	color: #143572;
