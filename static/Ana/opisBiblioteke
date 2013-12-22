@@ -1,0 +1,331 @@
+Obradena sucelja i klase:
+
+
+Interface SecretKey
+Interface KeySpec
+Class SecretKeySpec
+Class SecretKeyFactory
+Class Cipher
+Class KeyGenerator
+Class DESKEySpec
+Class KeyPairGenerator
+Class KeyPair
+
+
+
+Interface SecretKey
+
+- pripada paketu javax.crypto
+- nadsucelje: Key, klasa koja implementira sucelje: SecretKeySpec
+- naslijedene metode iz nadsucelja java.security.Key: getAlgorithm(), getEncoded(), getFormat()
+- tajni kljucevi za simetricne kriptografske algoritme
+- kljucevi koji  su implementirani ovim suceljem pozivanjem getFormat() vracaju string u primarnom formatu
+
+Metode:
+String getAlgorithm()
+	- vraca: naziv algoritma povezanog sa zadanim kljucem
+String getFormat()
+	- vraca: primarni format kodiranja kljuca
+byte[] getEncoded()
+	- vraca: kljuc u primarnom formatu kodiranja ili null, ako kljuc ne podrzava kodiranje
+
+
+
+Interface KeySpec
+
+- pripada paketu javax.crypto
+- klase koje implementiraju sucelje:  DESKeySpec, RSAPrivateKeySpec, RSAPublicKeySpec, SecretKeySpec
+- opisuje specifikacije materijala za kljuc koji tvori kriptografske kljuceve
+
+
+
+Class SecretKeySpec
+
+- pripada paketu javax.crypto
+- nasljeduje: Object, implementira sucelja: Key, KeySpec, SecretKey
+- moze se koristiti za izradu kljuca iz niza bajtova bez koristenja klase SecretKeyFactory
+- korisno samo za raw kljuceve koji mogu biti prikazani kao niz bajtova i nemaju dodatnih parametara
+
+Konstruktor: 
+SecretKeySpec(byte[] key, int offset, int len, String algorithm)
+
+- konstruira tajni kljuc iz danog niza bajtova, koristeci prvih 'len' bajtova, pocevsi od 'offset' (ukljucujuci taj 
+	indeks), za algoritam 'algorithm'
+- bajtovi koji konstruiraju kljuc su od key[offset] do key[offset+len-1]
+- ne provjerava ispravnost pocetno danog kljuca,  npr. ako se radi o DES kljucu ne provjerava da li kljuc ima 8 bajtova.  
+	Ukoliko se to zeli provjeravati potrebno je koristiti klasu  DESKeySpec SecretKeySpec(byte[] key, String algorithm)
+- konstruira kljuc iz danog niza bajtova, za algoritam 'algorithm'	
+
+Parametri: 
+key- materijal za izradu tajnog kljuca
+offset- pomak u danom kljucu od kojeg pocinje materijal za izradu tajnog kljuca
+len- duljina materijala za kljuc
+algorithm- naziv algoritma
+
+Metode: 
+String getAlgorithm()
+	- vraca: ime algoritma povezanog s tajnim kljucem
+	- specificirano metodom getAlgorithm() u sucelju Key
+byte[] getEncoded()
+	- vraca: materijal za kljuc od tajnog kljuca
+	- specificirano metodom getEncoded() u sucelju Key
+	-vraca novi niz svaki put kada je metoda pozvana
+String getFormat()
+	- vraca: naziv formata za tajni kljuc
+	- specificirano metodom getFormat() u sucelju Key
+int hashCode()
+	- racuna hash code vrijednost za objekt
+	- objekti koji su jednaki ce imati jednaki hash code 
+	- nadjacava: hashCode u klasi Object
+
+
+
+	 	 	
+Class SecretKeyFactory
+	
+- pripada paketu javax.crypto, nasljeduje: Object
+- klasa predstavlja tvornicu za izradu tajnih simetricnih kljuceva
+- koristi se za pretvorbu kljuceva tipa Key u specificnije kljuceve
+- funkcionira u oba smjera sto znaci da dozvoljava kreiranje objekta iz dane materijala za kljuc ili
+ iz danog objekta vraca materijal za kljuc u odgovarajucem formatu 
+- podrzava standardne SecretKeyFactory algoritme: AES, DES, DESede (3DES) 
+
+Konstruktor:
+protected SecretKeyFactory(SecretKeyFactorySpi keyFacSpi, Provider provider, String algorithm)
+
+Metode:
+SecretKey generateSecret(KeySpec keySpec)
+	- generira SecretKey objekt iz danog materijala za kljuc 
+String getAlgorithm()
+	 - vraca ime algoritma koji koristi SecretKeyFactory objekt
+static SecretKeyFactory getInstance(String algorithm)
+ 	- vraca SecretKeyFactory objekt za generiranje kljuceva odredenog algoritma
+KeySpec getKeySpec(SecretKey key, Class keySpec)
+ 	- vraca materijal za izradu kljuca danog objekta u trazenom formatu
+
+Parametri:
+algorithm -  naziv algoritma
+key - tajni kljuc
+
+
+
+Class Cipher
+
+- pripada paketu javax.crypto, nasljeduje Object
+- klasa pruza funkcionalnost sifriranja i desifriranja
+- kako bi se stvorio Cipher objekt, poziva se metoda getInstance u koju se prenosi transformaciju
+ (string) i sadrzava ime algoritma, nacin kriptiranja i nacin nadopune (engl. padding)
+
+Varijable:
+static int DECRYPT_MODE - konstanta koja se koristi za inicijaliziranje Cipher objekta u mode za desifriranje
+static int ENCRYPT_MODE - konstanta koja se koristi za inicijaliziranje Cipher objekta u mode za sifriranje
+
+postoje jos i varijable: PRIVATE_KEY, PUBLIC_KEY, SECRET_KEY, UNWRAP_MODE, WRAP_MODE
+
+Konstruktor:
+protected Cipher(CipherSpi cipherSpi, Provider provider, String transformation)
+
+Metode: 
+byte[] doFinal()
+	- zavrsava operaciju sifriranja ili desifriranja
+	- nakon zavrsetka vraca Cipher objekt pocetno stanje i spreman je ponovno vrsiti sifriranje ili desifriranje
+	- vraca sifrirani ili desifrirani niz bajtova
+byte[] doFinal(byte[] input)
+	- zavrsava operaciju sifriranja ili desifriranja za dani niz bajtova i vraca 	sifrirani ili desifrirani niz bajtova
+	- nakon zavrsetka vraca Cipher objekt pocetno stanje i spreman je ponovno vrsiti sifriranje ili desifriranje
+	- ukoliko se kao rezultat vrati iznimka, Cipher objekt je potrebno resetirati kako bi se mogao koristiti 
+                 ponovno
+String getAlgorithm()
+	- vraca ime algoritma
+int getBlockSize()
+	- vraca duljinu bloka u broju bajtova
+static Cipher getInstance(String transformation)
+	- vraca Cipher objekt koji implementira danu transformaciju
+	- transformacija je niz znakova koji se sastoji od sljedecih informacija:
+		algoritam- AES, DES, DESede, RSA,
+		nacin kriptiranja/dekriptiranja- CBC, ECB, OFB, CRC, CTR
+		nadopuna (engl.padding)- PKCS5Padding, NoPadding
+		ili 
+		algoritam
+	- primjer transformacije: "DES/CBC/PKCS5Padding"
+byte[] getIV()
+	- vraca inicijalizacijski vektor u nizu bajtova
+AlgorithmParameters getParameters()
+	- vraca parametre koristene sa Cipher objektom
+void init(int opmode, Key key, AlgorithmParameters params)
+	- inicijalizira Cipher objekt s nacinom sifriranja/desifriranja, kljucem i danim parametrima
+void init(int opmode, Key key, SecureRandom random)
+	- inicijalizira Cipher objekt s nacinom sifriranja/desifriranja, kljucem i danim izvorom slucajnih vrijednosti
+void init(int opmode, Key key, AlgorithmParameters params, SecureRandom random)
+	- inicijalizira Cipher objekt s nacinom sifriranja/desifriranja, kljucem,
+	 danim parametrima i izvorom slucajnih vrijednosti
+Byte[] update(byte[] input)
+	- nastavlja sljedecu fazu sifriranja/desifriranja 	 	
+
+
+	 	 	
+
+Class KeyGenerator 
+
+- pripada paketu javax.crypto, nasljeduje Object
+- generatori tajnih simetricnih kljuceva
+- generatori se konstruiraju koristenjem getInstance() metode
+- kreirani KeyGenerator objekt se moze koristiti vise puta tj. ne samo za izradu jednog kljuca
+- kljucevi se mogu generirati tako da su ovisni o algoritmu koji koristimo ili da su neovisni, 
+jedina razlika je u inicijalizaciji objekta
+
+neovisni: svi generatori kljuceva rade na principu da primaju duljinu kljuca (engl. keysize) i
+ 	izvora slucajnih vrijednosti (engl. source of randomness). Init metode u ovoj klasi primaju te argumente.
+ovisni: ukoliko postoje specificirani parametri koriste se init metode koje uz izvor slucajnih
+ 	vrijednosti primaju i argument AlgorithmParameterSpec.
+	-podrzani su standardni algoritmi: AES, DES, DESede i dr.
+
+Konstruktor:
+protected KeyGenerator(KeyGeneratorSpi keyGenSpi, Provider provider, String algorithm)
+
+Metode:
+SecretKey generateKey()
+	- generira tajni kljuc
+String getAlgorithm()
+	- vraca ime algoritma
+static KeyGenerator getInstance(String algorithm)
+	- vraca KeyGenerator objekt koji generira tajne kljuceve za zadani algoritam
+void init(AlgorithmParameterSpec params)
+	- inicijalizira generator kljuceva sa zadanim parametrima
+void init(AlgorithmParameterSpec params, SecureRandom random)
+	- inicijalizira generator kljuceva sa zadanim parametrima i danim izvorom slucajnih vrijednosti
+void init(int keysize) 
+	- inicijalizira generator kljuceva sa zadanom duljinom kljuca
+void init(int keysize, SecureRandom random)
+	- inicijalizira generator kljuceva sa zadanom duljinom kljuca i danim izvorom slucajnih vrijednosti
+void init(SecureRandom random)
+	-inicijalizira generator kljuceva s danim izvorom slucajnih vrijednosti
+
+Parametri:
+params - parametri generatora kljuceva
+keysize - duljina kljuca; duljina specificna za svaki algoritam, dana u broju bitova
+random - izvor slucajnih vrijednosti za generator kljuceva
+	 	 	
+
+
+
+Class DESKeySpec
+
+- pripada paketu javax.crypto, nasljeduje Object, implementira sucelje KeySpec
+- klasa specificira DES kljuc
+
+Varijable: 
+static int DES_KEY_LEN - konstanta koja definira duljinu DES kljuca
+
+Konstruktor:
+DESKeySpec(byte[] key) - kreira DESKeySpec objekt tako sto uzima prvih 8 bajtova iz 
+	danog materijala za kljuc u nizu bajtova
+DESKeySpeyte[] key, int offset) – kreira DESKeySpec objekt tako  sto uzima prvih 8 
+	bajtova iz danog materijala (key) pocevsi od indeksa ‘offset’
+
+Metode:
+byte[] getKey() - vraca DES kljuc
+static boolean isWeak(byte[] key, int offset) - provjerava da li je dan materijal za kljuc slab za izradu dobrog DES  kljuca
+
+Parametri:
+key- materijal za izradu DES kljuca, kopira se prvih 8 bajtova
+offset- indeks od kojeg se pocinje raditi DES kljuc
+
+
+
+
+Class KeyPairGenerator
+
+- pripada paketu java.security, nasljeduje KeyPairGeneratorSpi
+- generiranje javnih i privatnih kljuceva
+- generatori para kljuceva se kreiraju pozivanjem getInstance() metode
+- generator para kljuceva za specificni algoritam izraduje kljuceve
+- povezuje specificne parametre algoritma s kljucevima
+- postoje dva nacina generiranja para kljuceva- nacin ovisan o algoritmu i neovisan 
+	o algoritmu. Jedina razlika je inicijalizacija objekta
+
+neovisni: svi rade na principu duljine kljuca (engl. keysize) i izvora slucajnih 
+	vrijednosti (engl. source of randomness)
+	- keysize ovisi o algoritmu
+	-metoda initialize inicijalizira generator kljuceva s ta dva parametra; jedna verzija uzima keysize i random iz SecureRandom
+ovisni: ukoliko se zadaju parametri za algoritam koriste se initialize metode koje primaju i AlgorithmParameterSpec
+	-ako se posebno ne specizira, KeyPairGenerator radi kljuceve duljine 1024 bita
+	-podrzava algoritam RSA sa duljinama kljuceva 1024 i 2048 bita
+
+Konstruktor:
+protected KeyPairGenerator(String algorithm)
+ 	-kreira objekt klase KeyPairGenerator za zadani algoritam
+
+Metode:
+KeyPair generateKeyPair()
+	- generira par kljuceva
+KeyPair genKeyPair()
+	- generira par kljuceva
+String getAlgorithm()
+	- vraca ime algoritma
+static KeyPairGenerator getInstance(String algorithm)
+	- vraca objekt klase KeyPairGenerator koji generira javne i privatne kljuceve za zadani algoritam
+void initialize(AlgorithmParameterSpec params)
+	- inicijalizira generator para kljuceva koristeci zadani set parametara
+void initialize(AlgorithmParameterSpec params, SecureRandom random)
+	- inicijalizira generator para kljuceva koristeci zadani set parametara i implementaciju SecureRandom
+	klase kao izvor slucajnih vrijednosti
+void initialize(int keysize)
+	- inicijalizira generator para kljuceva koji ce generirati kljuceve duljine keysize
+void initialize(int keysize, SecureRandom random)
+	- inicijalizira generator para kljuceva koji ce generirati kljuceve duljine keysize i koristiti izvor slucajnih
+	vrijednosti iz implementacije klase SecureRandom
+
+Parametri:
+algorithm - naziv algoritma
+keysize - duljina kljuca
+random - izvor slucajnih vrijednosti
+params - parametri koristeni za generiranje kljuca
+
+
+
+
+Class KeyPair
+
+- nasljeduje Object, implementira sucelje Serializable
+- kad se inicijalizira treba se prema objektu ophoditi kao prema PrivateKey
+
+Konstruktor:
+KeyPair (PublicKey publicKey, PrivateKey privateKey)
+	-konstruira par kljuceva iz zadanog javnog kljuca i zadanog tajnog kljuca
+
+Metode:
+PrivateKey getPrivate() 
+	-vraca referencu na komponentu privateKey iz para kljuceva
+PublicKey getPublic()
+	-vraca referencu na komponentu publicKey iz para kljuceva
+
+Parametri: 
+privateKey - privatni kljuc
+publicKey - javni kljuc
+
+
+
+
+Class MessageDigest
+
+- pripada paketu java.security
+- klasa za sigurne jednosmjerne hash funkcije
+- podrzava algoritme: MD5, SHA-1, SHA-256
+
+Konstruktor:
+protected MessageDigest (String algorithm) 
+
+Metode:
+byte[] digest()
+	- zavrsava racunanje hasha zavrsnim operacijama
+byte[] digest(byte[] input)
+	- obavlja posljednje azuriranje koristeci dane bitove i zatim zavrsava racunanje
+String getAlgorithm()
+	- vraca ime algoritma
+static MessageDigest getInstance(String algorithm)
+	- vraca MessageDigest objekt koji implementira odredeni algoritam
+void reset()
+	- resetira digest za daljnju uporabu
+void update(byte[] input)
+	- azurira digest koristeci dani niz bajtova

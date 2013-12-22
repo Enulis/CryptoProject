@@ -1,0 +1,119 @@
+<html>
+	<head>
+
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Projekt</title>
+
+	</head>
+	<body>
+		<h1><a class="home" href="index.html"> Projekt </a></h1>
+		<h1 class="description"> 
+			Ana Kolar <br>
+			0036464402 <br>
+			FER, godina: 2013./2014. <br>
+			Mentor: Marin Golub <br>
+
+			<h1 class="description"> Download:
+			<a href="static/Ana/CryptographyInJava.jar"> jar </a> |
+			<a href="static/Ana/CryptographySrc.zip"> source</a></h1>
+		</h1>
+		<h2>Kriptografija u Javi</h2>
+		<br>
+		<p> Proizvod koji je razvijen u sklopu projekta je Java aplikacija koja prikazuje rad kriptografskih algoritama. U aplikaciji je moguće isprobati rad simetričnih algoritama (AES i DES), asimetričnog algoritma (RSA) i računanje sažetaka (MD5 i SHA-1). Namjena aplikacije je u edukativne svrhe za privatnu uporabu.<br>
+		<br>
+Osnovne funkcionalnosti aplikacije:<br>
+
+<dl>
+			<li>Unos teksta za kriptiranje (dekriptiranje) ili odabir tekstualne datoteke koju je potrebno kriptirati (dekriptirati)</li>
+			<li>Odabir tekstualne datoteke s ključem kojim se želi kriptirati (opcionalno) i odnosno odabir tekstualne datoteke s ključem za dekriptiranje bez kojeg se ono ne može izvesti</li>
+			<li>Računanje sažetka poruke (engl. message digest)</li>
+			<li>Prikaz rezultata</li>
+</dl>
+
+<br>
+</p>
+		<br>
+
+		<h3>Tehničke značajke</h3>
+		<p>Koraci uporabe kriptografskih algoritama implementiranih u opisanoj biblioteci (javax.crypto, java.security): <br>
+
+<dl>
+			<li> generiranje ključa (ključeva) - ovisno o algoritmu</li>
+			<li> spremanje ključa u datoteku - kako bi se kriptirani tekst mogao dekriptirati</li>
+			<li> generiranje inicijalizacijskog vektora (potrebno za algoritme AES i DES uz CBC način kriptiranja)
+</li>
+			<li> spremanje niza bajtova od kojih se radi inicijalizacijski vektor (kako bi se mogao rekonstruirati prilikom dekriptiranja)</li>
+			<li> instanciranje klase Cipher</li>
+			<li> inicijaliziranje instanciranog Cipher objekta</li>
+			<li> korištenje doFinal() metode za završni korak kriptiranja (dekriptiranja)</li>
+</dl>
+
+<br>
+
+
+ <p>Koraci korištenja hash funkcija (javax.crypto, java.security): <br>
+
+<dl>
+			<li> instanciranje klase MessageDigest</li>
+			<li> uporaba update() metode</li>
+			<li> uporaba digest() metode</li>
+</dl>
+
+
+ </p>
+
+ 		<p>Detaljni opis biblioteke možete pronaći  <a href="static/Ana/opisBiblioteke">ovdje</a>
+
+
+		<br><br>
+	
+	
+
+		<br><br>
+		<h3>Upute za korištenje</h3>
+
+		<br>
+		<h4>Pokretanje</h4>
+
+		<p>U konzoli se pozicionirate na direktorij u kojem se nalazi CryptographyInJava.jar koji ste skinuli <a href="static/Ana/CryptographyInJava.jar">ovdje</a> <br>
+		Zatim upišete java -jar CryptographyInJava.jar i pritisnete enter.</p>
+
+		<br>
+		<h4>Primjer korištenja</h4>
+
+		<p>U padajućem izborniku odabire se algoritam koji se želi isprobati. Moguće je kriptirati i dekriptirati poruke i datoteke algoritmima AES, DES i RSA i računati sažetke poruka hash funkcijama MD5, SHA-1.
+		Na glavnom prozoru prikazane kratke upute za korištenje. Klikom na gumb Zatvori zatvara se prozor.</p>
+
+		<div class="container"><img src="static/Ana/mainFrame.png">
+		</div>
+
+		<p>Izborom simetričnog algoritma AES ili DES otvara se novi prozor u kojem je moguće odabrati i način kriptiranja (dekriptiranja) ECB ili CBC. Ukoliko se ne odabere, podrazumijevat će se ECB način kriptiranja. Moguće je kriptirati i dekriptirati poruku ili datoteku. Ukoliko je izbor kriptiranje moguće je odabrati datoteku s vlastitim ključem i potrebnim parametrima te ako se datoteka ne odabere algoritam će sam stvoriti ključeve i spremiti ih u datoteke AESSecretKey.txt i DESSecretKey.txt i ako se radi o CBC načinu stvorit će se i datoteka iv.txt u kojoj je spremljen materijal za izradu inicjializacijskog vektora kako bi se kriptirani podaci mogli dekriptirati. Pri dekriptiranju, odabir datoteke s ključem je nužan, a ukoliko se radi o CBC načinu, potreban je i odabir datoteke s inicijalizacijskim vektorom. Nakon što su uneseni podaci za kriptiranje i/ili datoteka s ključem potrebno je kliknuti na gumb Kriptiraj (odnosno Dekriptiraj). Ukoliko se radi o poruci, rezultat je prikazan u polju Rezultat, a ako se radi o datoteci ispisuje se poruka s nazivom datoteke koja sadrži kriptirane podatke, npr. encryptedFileCBC.txt. Klikom na gumb OK zatvara se prozor.</p>
+
+		<p>Izborom asimetričnog algoritma i klikom na Potvrdi otvara se novi prozor. Moguće je kriptirati i dekriptirati poruku ili datoteku RSA algoritmom. Ukoliko je izbor kriptiranje moguće je odabrati datoteku s vlastitim javnim ključem te ako se datoteka ne odabere, algoritam će sam stvoriti ključeve i privatni ključ spremiti u datoteku privateRSAKey.txt kako bi se kriptirani podaci mogli dekriptirati. Ako se radi o dekriptiranju, odabir datoteke s ključem je nužan. Nakon što su uneseni podaci za kriptiranje i/ili datoteka s ključem potrebno je kliknuti na gumb Kriptiraj (odnosno Dekriptiraj). Ukoliko se radi o poruci, rezultat je prikazan u prozoru Rezultat, a ako se radi o datoteci ispisuje se poruka s nazivom datoteke koja sadrži kriptirane podatke, npr. decryptedFileRSA.txt.
+		Klikom na gumb OK zatvara se prozor.</p>
+
+
+		<div class="container"><img src="static/Ana/RSADialog.png">
+		</div>
+
+		<p>Klikom na Hash moguće je birati između hash funkcija MD5 i SHA-1. Klikom na jednu od tih funkcija i klikom na Potvrdi otvara se novi prozor  u kojem se računa sažetak ručno unesene poruke.</p>
+
+		<div class="container"><img src="static/Ana/HashDialog.png">
+		</div>
+
+		<p>Potrebno je unijeti niz znakova i klikom na Sazmi poruku izračunati sažetak se prikaže u polju Rezultat. <br>
+
+		Klikom na Izlaz  moguće je odabrati Kraj simulacije čime se izlazi iz aplikacije. <br>
+		Klikom na Info moguće je odabrati link na web stranicu na kojoj se nalazi dokumentacija aplikacije i upute za korištenje.</p>
+
+		<h3>Literatura</h3>
+
+		<ol type="1">
+			<li class="literature">Budin, Golub, Jakobović, Jelenković : Operacijski sustavi</li>
+			<li class="literature"><a href="http://docs.oracle.com/javase/7/docs/api/javax/crypto/package-summary.html">http://docs.oracle.com/javase/7/docs/api/javax/crypto/package-summary.html</a></li>
+			<li class="literature"><a href="http://docs.oracle.com/javase/7/docs/api/java/security/package-summary.html">http://docs.oracle.com/javase/7/docs/api/java/security/package-summary.html</a></li>
+        </ol>
+
+	</body>
+</html>
