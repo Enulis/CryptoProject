@@ -1,0 +1,271 @@
+﻿<html>
+
+	<head>
+
+		<link rel="stylesheet" type="text/css" href="style.css">
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+		<title>Projekt</title>
+
+
+	</head>
+
+	<body background="static/bright_squares/bright_squares.png">
+
+		<h1><a class="home" href="index.html"> Projekt </a></h1>
+
+		<h3 class="description"> 
+
+			Matea Pejčinović
+		<br>
+			0036462850
+		<br>
+			Fakultet elektrotehnike i računarstva
+		<br>
+			Akademska godina: 2013./2014.
+		<br>
+			Mentor: prof.dr.sc.Marin Golub
+		<br>
+
+			<h3 class="description"> Download:
+			<a href="static/GROESTL.zip"> Source </a> |
+
+			<a href="static/Groestl.zip"> Groestl</a>
+		</h3>
+		</h3>
+		<br>
+		<br>
+		<br>
+		<h1><center> Funkcija za sažimanje poruka GROESTL</center></h1>
+
+		
+		<br>
+		<br>
+		
+		<p>
+		<br><h3><font color="#0431B4">SADRŽAJ</font></h3>
+		<ol>
+			<li><a href="#uvod">OPIS</a></li>
+			<li><a href="#opis">OPIS RAZVIJENOG PROIZVODA</a></li>
+			<li><a href="#znač">TEHNIČKE ZNAČAJKE</a>
+			<ol>
+				<li><a href="#hash">Hash funkcija</a></li>
+				<li><a href="#kompr">Kompresijska funkcija</a></li>
+				<li><a href="#perm">Permutacije</a></li>
+				<ol>
+					<li><a href="#add">AddRoundConstant</a></li>
+					<li><a href="#sub">SubBytes</a></li>
+					<li><a href="#shift">ShiftBytes</a></li>
+					<li><a href="#mix">MixBytes</a></li>
+				</ol>
+				<li><a href="#izlaz">Izlazna funkcija</a></li>
+			</ol>
+			</li>
+			<li><a href="#upute">UPUTE ZA KORIŠTENJE</a></li>
+			<li><a href="#lit">LITERATURA</a></li>
+		</ol>
+		</p>
+		<br>
+		<br>
+		<br>
+		<br>
+		
+		
+		
+		
+		
+		<h3><a id="uvod"><font color="#0431B4">UVOD</a></font></h3>
+		<p>
+			Funkcija za sažimanje poruka Groestl je jedan od finalista SHA-3 natječaja kojeg je raspisao National Institute of Standards and Technology (NIST). Glavno obilježje Groestla jest to da je on skup funkcija sažimanja razvijen u mnogim varijantama s različitim veličinama izlaza. Zasnovan je na funkciji za računanje sažetka i kompresijskoj funkciji u okviru koje se pozivaju P-permutacija i Q-permutacija.
+		</p>
+
+		<br>
+		<br>
+		<h3><a id="opis"><font color="#0431B4">OPIS RAZVIJENOG PROIZVODA</font></a></h3>
+
+		<p>
+		Programski proizvod nastao u okviru kolegija Projekt iz programske potpore je aplikacija u C# programskom jeziku. Ona je implementacija Groestla, funkcije za sažimanje poruka. Programsko rješenje uglavnom slijedi izvorni algoritam. Razlika je u implementaciji proširenja ulazne poruke gdje je korišten padding algoritma AES. Inače je aplikacija razvijena korištenjem osam klasa:
+			<ul>
+				<li>Program.cs</li>
+				<li>Pokreni.cs</li>
+				<li>Hash.cs</li>
+				<li>Kompresija.cs</li>
+				<li>RadSPermutacijama.cs</li>
+				<li>Izlaz.cs</li>
+				<li>EkskluzivniILI</li>
+				<li>Form1.cs</li>
+			</ul>
+			
+		</p>
+		
+		<br>
+		<br>
+		<h3><a id="znač"><font color="#0431B4">TEHNIČKE ZNAČAJKE</font></a></h3>
+		
+		<p>
+		Groestl algoritam je prepoznatljiv kao skup funkcija za sažimanje poruka. Kolika će biti duljina izlaza, ovisi o tome koju verziju Groestla pokrenemo. Naime, Groestl se u literaturi pojavljuje kao Groestl-n gdje n označava broj bita u izlaznoj poruci. Tako postoje verzije Groestl-224, Groestl-256, Groestl-384 i Groestl-512. Varijante se međusobno razlikuju samo u početnoj vrijednosti i konačnom sažimanju za produkciju hash vrijednosti. 
+		U okviru algoritma implementirane su hash funkcija, kompresijska funkcija, funkcija za rad s permutacijama te izlazna funkcija. Kao zasebna klasa implementirano je računanje ekskluzivnog ili budući da se koristi jako mnogo puta.
+		</p>
+		
+		<br>
+		<br>
+		<h4><a id="hash"><font color="#0431B4">Hash funkcija</font></a></h4>
+	
+		<p>
+		Nakon što se zadaju ulazna poruka koji treba sažeti i duljina izlazne poruke u bitovima, ti se parametri šalju u hash funkciju gdje se ulazna poruka dijeli u više blokova koji se procesiraju u kompresijskoj funkciji. Svi se blokovi procesiraju zasebno, ali u ovisnosti o prethodnom bloku.
+		</p>
+		<center><img src="static/Pictures/Hash.png"></center>
+
+		<p>
+		H0 je pridružen IV, inače početna vrijednost. Ulazi u kompresijsku funkciju , Hi-1 i Mi, duljine su l bita baš kao i izlaz Hi. Parametar l se određuje prema duljini sažetka, tj. prema duljini izlazne poruke i u svim je varijantama barem dva puta veći od n. Nakon što se svi blokovi obrade, izlazna transformacija <img src="static/Pictures/dodatak1.png"> se pokreće i na daje konačnu n-bitnu hash vrijednost h.
+		Bitno je naglasiti da duljina svih blokova treba biti jednaka pa se stoga treba provesti punjenje, odnosno proširenje ulazne poruke (eng. padding). Duljina poruke treba biti višekratnik broja l pa se poruka nadopunjuje dodavanjem bita 1 nakon čega sliijedi (N-65 mod l) bitova 0 te na kraju 64-bitni binarni zapis broja blokova koji predstavlja ograničenje na maksimalnu duljinu poruke.
+		</p>
+
+		<br>
+		<h4><a id="kompr"><font color="#0431B4">Kompresijska funkcija</font></a></h4>
+
+		<p>
+		Kompresijska funkcija f se temelji na dvije l-bitne permutacije: P-permutaciji i Q-permutaciji. Ona se definira na sljedeći način:
+		</p>
+		<center><img src="static/Pictures/KompresijskaFunkcija.png"></center>
+
+		<p>
+		Kompresijska funkcija grafički se prikazuje na sljedeći način:
+		</p>
+		<center><img src="static/Pictures/KompresFja.png"></center>
+
+		<p>
+		Kao što je na slici vidljivo, u kompresijskoj funkciji koriste se dvije permutacije, P i Q. Ulaz u P permutaciju je rezultat operacije ekskluzivno ili između bloka poruke i ulančanog ulaza.
+		</p>
+		<br><center><img src="static/Pictures/KompFja.png"></center>
+		<br><center>Prikaz programskog ostvarenja</center>
+		
+		<p>
+		Izlaz je pak rezultat iste funkcije, ali ovaj put između izlaza iz permutacije P i permutacije Q.
+		</p>
+		
+		<br>
+		<h4><a id="perm"><font color="#0431B4">Permutacije</font></a></h4>
+		
+		<p>U okviru permutacija trebaju se izvesti četiri transformacije:
+		
+			<ul>
+				<li>AddRoundConstant</li>
+				<li>SubBytes</li>
+				<li>ShiftBytes</li>
+				<li>MixBytes</li>
+			</ul>
+		Permutacije P i Q se razlikuju samo u konstantama koje se koriste u tranformacijama AddRoundConstant i ShiftBytes te u broju koraka. Groestl-256 ima 10 koraka i pridružene permutacije P512 i Q512, a Groestl-512 14 koraka te permutacije P1024 i Q1024. Najprije se ulaz podijeli po bajtovima tako da se matrica puni redak po redak. Broj redaka je uvijek 8, a mijenja se broj stupaca. Za l = 512, broj stupaca je 8, a za l = 1024, broj stupaca iznosi 16.</p>
+
+		<br>
+		<h5><a id="add"><font color="#0431B4">AddRoundConstant</font></a></h5>
+		
+		<p>
+		AddRoundConstant se sastoji od operacija ekskluzivnog ILI između redaka matrice stanja i konstanti koje se razlikuju za P i Q permutacije. Matrica stanja se mijenja u ovoj transformaciji na sljedeći način:
+		</p>
+		<center><img src="static/Pictures/konstić.png"></center>
+		
+		<p>
+		gdje je C[i] konstanta različita za P i Q pa prva C[i] je konstanta za P512, druga za Q512, treća za P1024, a četvrta za Q1024 permutaciju.
+		</p>
+		<br><center><img src="static/Pictures/ZaP512.png"></center>
+		<br>
+		<br><center><img src="static/Pictures/ZaQ512.png"></center>
+		<br>
+		<br><center><img src="static/Pictures/ZaP1024.png"></center>
+		<br>
+		<br><center><img src="static/Pictures/ZaQ1024.png"></center>
+		<br>
+		<br>
+		<h5><a id="sub"><font color="#0431B4">SubBytes</font></a></h5>
+		
+		<p>
+		U okviru ove transformacije primjenjuje se S-Kutija na svaki član matrice. Svaki se element matrice dobije tako da se zamijeni odgovarajućim elementom S-kutije.
+		</p>
+		<br><center><img src="static/Pictures/aDD.png"></center>
+		<br><center>Programski prikaz transformacije SubBytes</center>
+		<br>
+		<h5><a id="shift"><font color="#0431B4">ShiftBytes</font></a></h5>
+		
+		<p>
+		ShiftBytes ciklički rotira elemente u pojedinom retku matrice ovisno o verziji algoritma i vrsti permutacije. Polja posmaka su zadana na sljedeći način:
+		</p>
+		<br><img src="static/Pictures/poljeP512.png">  za permutaciju P512
+		<br>
+		
+		<br><img src="static/Pictures/poljeQ512.png">  za permutaciju P1024
+		<br>
+		
+		<br><img src="static/Pictures/poljeP1024.png"> za permutaciju Q512
+		<br>
+		
+		<br><img src="static/Pictures/poljeQ1024.png"> za permutaciju Q1024
+		<br>
+		
+		<br>
+		<h5><a id="mix"><font color="#0431B4">MixBytes</font></a></h5>
+		
+		<p>
+		Ova transformacija množi svaki redak A matrice konstantom koja je predstavljena kao kružna matrica B dimenzija 8 x 8.
+		</p>
+		<br><center><img src="static/Pictures/matrica B.png"></center>
+		
+		<br><center><img src="static/Pictures/matrica.png"></center>
+		
+		<p>
+		U matrici B su konstante elementi konačnog polja GF (2<sup>8</sup>) definirani polinomom <img src="static/Pictures/polinom.png"> 8-bitna vrijednost x u binarnom zapisu <img src="static/Pictures/pol2.png"> se tada predstavi koristeći polinom u konačnom polju GF (2<sup>8</sup>):
+		</p>
+		
+		<br><center><img src="static/Pictures/KonPolinom.png"></center>
+		<p>
+		Množenje x*y u polju GF(2<sup>8</sup>) definirano je kao polinomno množenje modulo polinom <img src="static/Pictures/polinom.png"> Budući da bi ovaj način bio jako spor, koristi se učinkovitija implementacija transformacije MixBytes koja koristi posmak bitova i XOR operaciju:
+		</p>
+		<br><center><img src="static/Pictures/Trik.png"></center>
+		<br><center>Alternativno rješenje funkcije MixBytes</center>
+		
+		<br>
+		<h4><a id="izlaz"><font color="#0431B4">Izlazna funkcija</font></a></h4>
+		
+		<p>
+		U izlaznoj funkciji se generira n-bitni izlaz:
+		</p>
+		
+		
+		<p>
+		Ht je izlaz iz zadnjeg poziva kompresijske funkcije koji se dovodi na permutaciju P čiji izlaz potom u operaciji ekskluzivni ILI s istim Ht daje izlaz iz izlazne funkcije, a time i iz algoritma Groestl. U gornjem prikazu truncn odbacuje sve znakove osim zadnjih n bita rezultata XOR operacije.
+		</p>
+		<br><center><img src="static/Pictures/Izlaz.png"></center>
+		<br>
+		<br><center><img src="static/Pictures/IzlazKaoSlika.png"></center>
+		
+		<br>
+		<br>
+		<h3><a id="upute"><font color="#0431B4">UPUTE ZA KORIŠTENJE</font></a></h3>
+		
+		<p>
+		U aplikaciji je predviđeno mjesto za unos teksta za sažimanje nakon čega slijedi odabir verzije Groestl algoritma. Inače je Groestl algoritam razvijen za različite duljine izlaza, a ova aplikacija je razvijena za inačice Groestl-256 i Groestl-512. Unosom teksta i odabirom verzije algoritma aplikacija se pokreće pritiskom na gumb POKRENI, a njezin se rezultat može vidjeti u heksadekadskom zapisu. 
+		</p>
+		<br><center><img src="static/Pictures/Aplikacija.png"></center>
+		<br><center>Razvijena aplikacija</center>
+		
+		<br>
+		<br>
+		<h3><a id="lit"><font color="#0431B4">LITERATURA</font></a></h3>
+		
+		<p>
+		<br>		Studeni 2013. 
+		<br>     <p><a href=" http://csrc.nist.gov/groups/ST/hash/sha3/Round3/documents/Groestl_FinalRnd.zip">SHA-3 GROESTL</a></p>
+
+		<br>		Prosinac 2013.
+		<br>     <p><a href=" http://www.groestl.info/specification.html">Specifikacija GROESTL-a</a></p>
+		
+		<br>		Studeni 2013.
+		<br>     <p><a href=" http://www.groestl.info/implementations.html">Implementacija GROESTL-a</a></p>
+		
+		<br> Sve neoznačene slike su preuzete iz gore navedene literature.
+		</p>
+		
+		
+</body>
+</html>
